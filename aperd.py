@@ -15,11 +15,35 @@ parser.add_argument( "-l", dest= "linesToDelete", help="start line in file", def
 parser.add_argument( "-s", dest= "start", help="start line in file", default = 0, type = int )
 parser.add_argument( "-g", "--go", dest= "go", help="send the mails", action = "store_true" )
 parser.add_argument( "-pdf", dest= "pdf", help="only generate pdfs", action = "store_true" )
+parser.add_argument( "-v", "--verbose", dest= "verbose", help="verbose output", action = "store_true" )
 parser.add_argument('-i','--ignore', nargs='+', help='Ignored groups', default = [])
 args = parser.parse_args()
 
 font = "times"
 classRow = args.classRow
+
+titles = {
+"14" : [
+"La Classe en général", "Avez-vous des remarques à faire relatives aux horaires, à l’ambiance de la classe, la discipline, les contrôles, l’emploi du temps, le déroulement des cours, les absences des professeurs…."
+],
+"15":[
+"La scolarité de votre enfant",
+"Ces questions visent à recueillir votre avis sur l'épanouissement de votre enfant dans le collège.",
+"D'un point de vue \"scolaire\"",
+"Au sujet du programme, du rythme, des horaires, du contrôle des connaissances…",
+],
+"17":[
+"D’un point de vue \"relationnel\"",
+"Au sujet de l’ambiance générale, de la discipline, des relations avec les autres élèves ou les professeurs."
+],
+"19":[
+"Dans certaines matières ?",
+"Est-ce que dans certaines matières, votre en​fa​nt rencontr​e​ de​s ​difficultés, ou bien vous avez des questions concernant à leur sujet ?​"],
+"28":[
+"La vie au collège & expression libre",
+"​A​v​ez-vo​us d​es ​r​e​m​a​rqu​es à ​f​a​ire c​o​n​cer​n​a​nt l​a ​cantine​, ​l​es re​p​a​s​, ​l​'​a​s​soc​i​a​t​io​n sporti​v​e​, ​le​s ​r​é​création​s​, ​la sécu​r​it​é, ​le s​e​r​v​ice médic​a​l​, ​l​'​accue​i​l​, ​le ​C​DI​, ​les a​c​ti​v​ités ​s​p​or​ti​ves e​t ​c​ulturell​es ​du midi​, ​l​es ​sor​t​ie​s ​p​é​da​g​o​g​iqu​e​s​, ​l​e​s ​é​tudes, l’association des parents… ?"]
+}
+
 
 def clean( txt ):
 	txt = txt.translate({ord(i): None for i in '\"\u200b'})
@@ -50,8 +74,10 @@ def printGroup( lines, group, returnPDF = False ) :
 	l = lines[ 0 ][ args.parentRow : args.parentRow + 4 ]
 	pdf.write( text= "\n" + ", ".join( l ) + "\n\n" )
 
+	# list pupils and parents names
 	for i, line in enumerate( lines ):
 		if i == 0 : continue
+		pdf.set_text_color(0, 0, 255)
 		pdf.set_font( font, "B", size=12)
 		pdf.write( text= "(" + str( i ) + ")   " )
 		pdf.set_font( font, size=12)
@@ -60,19 +86,42 @@ def printGroup( lines, group, returnPDF = False ) :
 		l = line[ args.parentRow : args.parentRow + 4 ]
 		pdf.write( text= ", ".join( l ) )
 		pdf.write( text= "\n\n")
+		pdf.set_text_color(0, 0, 0)
 
+
+	# list answers
 	categories = lines[ 0 ]
 	for col, category in enumerate( categories ):
 		if col > 19 and col < 27 : continue
+
 		for line in range( len( lines ) ): 
 			if col < args.startRow : continue
 			if line == 0 :
 				pdf.set_font( font, "B", size=16)
 				pdf.write( text= "\n")
+				question = str(col)
+				if args.verbose : pdf.write( text= question + "\n")
+				if question in titles:
+					title = titles[ question ]
+					pdf.set_font( font, "BU", size=16)
+					pdf.write( text= clean(title[0]) + "\n")
+					pdf.set_font( font, "I", size=12)
+					pdf.write( text= clean(title[1]) + "\n\n")
+					pdf.set_font( font, "B", size=16)
+					if len( title ) > 3:
+						pdf.set_font( font, "BU", size=16)
+						pdf.write( text= clean(title[2]) + "\n")
+						pdf.set_font( font, "I", size=12)
+						pdf.write( text= clean(title[3]) + "\n\n")
+						pdf.set_font( font, "B", size=16)
+
 			if line > 0:
+				pdf.set_text_color(0, 0, 255)
 				pdf.set_font( font, "B", size=12)
 				pdf.write( text= "(" + str( line ) + ")   " )
 				pdf.set_font( font, size=12)
+				pdf.set_text_color(0, 0, 0)
+
 			value = lines[ line ][ col ]
 			pdf.write( text= value )
 			pdf.write( text= "\n")
@@ -88,8 +137,7 @@ def printGroup( lines, group, returnPDF = False ) :
 
 				if not found :
 					pdf.write( text= "aucune\n" )
-						
-				
+
 			pdf.write( text= "\n")
 
 	if not returnPDF : pdf.output( group + ".pdf")
@@ -121,7 +169,8 @@ body = "\n".join( ["Bonjour",
 
 emails = None
 if not args.sendTo :
-	emails = getEmails()
+	emails = getEmails( args.verbose )
+	if args.verbose : print( "Emails : ", emails )
 
 for c in sorted( classes ):
 	if c in args.ignore : continue

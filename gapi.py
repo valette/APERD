@@ -75,27 +75,28 @@ def sendMail( msg ):
 	print(F'sent message to {message} Message Id: {message["id"]}')
 
 
-def getEmails():
+def getEmails( verbose=False ):
+	if verbose : print( "Récuperation des emails..." )
 	init()
 	SAMPLE_SPREADSHEET_ID = "1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU"
 	SAMPLE_RANGE_NAME = "CC_23-24!A:Z"
-	SAMPLE_RANGE_NAME2 = "CC_T1!A:Z"
-	s = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME )
-#	print( s)
-	s2 = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME2 )
-#	print( s2)
+	SAMPLE_RANGE_NAME2 = "CC_T1!A1:Z19"
+	members = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME )
+	if verbose : print( "Membres : ", members)
+	classes = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME2 )
+	if verbose : print( "Classes : ", classes)
 
 	emails = {}
-	for n, line in enumerate( s2[ 1:] ):
+	for n, line in enumerate( classes[ 1:] ):
 		if len( line ) < 8: continue
-#		print( "classe :", line[ 0 ] )
+		if verbose : print( "classe :", line[ 0 ] )
 		people = []
 		for name in [ line[6], line[ 7 ] ]:
 			if len( name ) < 4 : continue
 			cleanName = unidecode( name ).strip()
 			found = False
 			email = None
-			for l in s:
+			for l in members:
 				if len( l ) < 4 : continue
 				if unidecode( l[ 3 ] ).strip() == cleanName:
 					found = True
@@ -107,7 +108,9 @@ def getEmails():
 
 #			print( name, ":" ,email )
 			people.append( { "name" : cleanName, "email" : email } )
+		if verbose : print( "emails :", people )
 		emails[ line[ 0 ] ] = people
+	if verbose : print( "Emails trouvés" )
 	return emails
 
 if __name__ == "__main__":
