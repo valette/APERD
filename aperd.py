@@ -64,7 +64,9 @@ def getGroup( lines, gr ) :
 		if line[ args.classRow ] == gr :
 			group.append( line )
 			found = True
-	if not found : return None
+	if not found :
+		print( "Pas de retour pour cette classe" )
+		return None
 	return group
 
 def printGroup( lines, group, returnPDF = False ) :
