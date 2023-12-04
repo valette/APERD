@@ -59,7 +59,8 @@ def getSheet( sheetID, sheetRange ):
 def sendMail( msg ):
 	init()
 	message = EmailMessage()
-	for field in [ "To", "Subject", "Cc" ]: message[ field ] = msg[ field ]
+	for field in [ "To", "Subject", "Cc" ]:
+		if field in msg : message[ field ] = msg[ field ]
 	message.set_content( msg["Body"] )
 
 	if "Attachments" in msg:
