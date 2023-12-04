@@ -5,9 +5,11 @@ from fpdf import FPDF
 from gapi import sendMail, getEmails
 from datetime import datetime
 
+APERDEmail = "secretariat.aperd.lyon@gmail.com"
+
 parser = argparse.ArgumentParser( description = 'Distances computation', formatter_class=argparse.ArgumentDefaultsHelpFormatter )
 parser.add_argument( "-to", dest= "sendTo", help="Send to this adress" )
-parser.add_argument( "-cc", dest= "copyTo", help="Send copies to this adress", default = [], action = "append" )
+parser.add_argument( "-cc", dest= "copyTo", help="Send copies to this adress", default = [ APERDEmail ], action = "append" )
 parser.add_argument( "-cr", dest= "classRow", help="class row in file", default = 9, type = int )
 parser.add_argument( "-sr", dest= "startRow", help="start row in file", default = 14, type = int )
 parser.add_argument( "-pr", dest= "parentRow", help="start row in file", default = 10, type = int )
@@ -17,6 +19,7 @@ parser.add_argument( "-g", "--go", dest= "go", help="send the mails", action = "
 parser.add_argument( "-pdf", dest= "pdf", help="only generate pdfs", action = "store_true" )
 parser.add_argument( "-v", "--verbose", dest= "verbose", help="verbose output", action = "store_true" )
 parser.add_argument('-i','--ignore', nargs='+', help='Ignored groups', default = [])
+parser.add_argument('-o','--only', nargs='+', help='Only groups', default = [])
 args = parser.parse_args()
 
 font = "times"
@@ -56,12 +59,17 @@ def clean( txt ):
 def getGroup( lines, gr ) :
 	group = []
 	group.append( lines[ 0 ] )
+	found = False
 	for line in lines[ 1: ]:
-		if line[ args.classRow ] == gr : group.append( line )
+		if line[ args.classRow ] == gr :
+			group.append( line )
+			found = True
+	if not found : return None
 	return group
 
 def printGroup( lines, group, returnPDF = False ) :
 	lines = getGroup( lines, group )
+	if not lines : return None
 	pdf = FPDF()
 	pdf.add_page()
 	pdf.image( "logo.png", x = 160, w = 35)
@@ -145,7 +153,6 @@ def printGroup( lines, group, returnPDF = False ) :
 
 def getAllGroups( file ):
 	lines = []
-	classes = {}
 	with open( file ) as f:
 		l = csv.reader( f, delimiter="\t" )
 		for n, line in enumerate( l ):
@@ -154,25 +161,48 @@ def getAllGroups( file ):
 				if int( line[ 0 ] ) < args.start : continue
 			lines.append( list( map( clean, line ) ) )
 			if n == args.linesToDelete: continue
-			classes[ line[ args.classRow ] ] = True
-		return lines, classes
+		return lines
 
-lines, classes = getAllGroups( 'aperd.tsv' )
+lines = getAllGroups( 'aperd.tsv' )
 
 subject = "APERD Dufy {} : Retours Sondage Conseils de Classe"
-body = "\n".join( ["Bonjour",
-"Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe.",
-"Pour toute question utilisez de préférence le canal Whatsapp \"APERD Conseils de Classe\"",
+
+begin = ["Bonjour",
+"Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe.", "" ]
+
+hasPolls = ["Un récapitlatif des retours de sondage est en pièce jointe à ce message."]
+hasNoPolls = ["Malheureusement, aucun parent d'élève de la classe n'a pour l'instant répondu au sondage."]
+
+end = [ "", "Pour toute question, utilisez de préférence le canal Whatsapp \"APERD Conseils de Classe\"", ""
 "Bonne journée",
 "Pour l'APERD",
-"Sébastien VALETTE"] )
+"Sébastien VALETTE"]
+
+bodyLines = []
+bodyLines.extend( begin )
+bodyLines.extend( hasPolls )
+bodyLines.extend( end )
+
+bodyNoPollsLines = []
+bodyNoPollsLines.extend( begin )
+bodyNoPollsLines.extend( hasNoPolls )
+bodyNoPollsLines.extend( end )
+
+body = "\n".join( bodyLines )
+bodyNoPolls = "\n".join( bodyNoPollsLines )
 
 emails = None
 if not args.sendTo :
 	emails = getEmails( args.verbose )
 	if args.verbose : print( "Emails : ", emails )
 
-for c in sorted( classes ):
+
+groups = args.only
+if len( groups ) == 0:
+	for n in range( 3, 7 ) :
+		for i in range( 1, 5 ) : groups.append( str( n ) + "0" + str( i ) )
+
+for c in groups:
 	if c in args.ignore : continue
 	print( "Classe : " + c )
 	content = printGroup( lines, c, not args.pdf )
@@ -189,18 +219,20 @@ for c in sorted( classes ):
 
 	print( toSend )
 	if args.pdf : continue
+	bodyToSend = body if content else bodyNoPolls
 
 	msg = {
-		"Body" : body.format( c, dateStr),
+		"Body" : bodyToSend.format( c, dateStr),
 		"To" : ",".join( toSend ),
 		"Subject" : subject.format( c ),
-		"Attachments" : { fileName : content }
 	}
 
-	if len( args.copyTo ) : msg[ "Cc" ] = ",".join( args.copyTo )
+	if content:	msg[ "Attachments" ] = { fileName : content }
+
+	if not args.sendTo and len( args.copyTo ) : msg[ "Cc" ] = ",".join( args.copyTo )
 
 	if not args.go :
-		msg[ 'Attachments' ] = fileName
+		if content: msg[ "Attachments" ] = fileName
 		print( json.dumps( msg, indent = 4 ) )
 		print( "Dry mode : email not sent, use -g option to really send mails" )
 		continue
