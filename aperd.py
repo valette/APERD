@@ -22,8 +22,9 @@ parser.add_argument('-i','--ignore', nargs='+', help='Ignored groups', default =
 parser.add_argument('-o','--only', nargs='+', help='Only groups', default = [])
 args = parser.parse_args()
 
+allGroups = "all"
+
 font = "times"
-classRow = args.classRow
 
 titles = {
 "14" : [
@@ -58,12 +59,15 @@ def clean( txt ):
 
 def getGroup( lines, gr ) :
 	group = []
-	group.append( lines[ 0 ] )
 	found = False
 	for line in lines[ 1: ]:
-		if line[ args.classRow ] == gr :
+		if gr == allGroups or line[ args.classRow ] == gr :
 			group.append( line )
 			found = True
+
+	if gr == allGroups : group.sort( key= lambda l : l[ args.classRow ] )
+	group.insert( 0, lines[ 0 ] )
+
 	if not found :
 		print( "Pas de retour pour cette classe" )
 		return None
@@ -76,25 +80,43 @@ def printGroup( lines, group, returnPDF = False ) :
 	pdf.add_page()
 	pdf.image( "logo.png", x = 160, w = 35)
 	pdf.set_font( font, "BU", size=24)
-	pdf.text( x=10, y=25, text= "Retour des sondages pour la classe " + group)
+	if group == allGroups:
+		pdf.text( x=10, y=25, text= "Retour des sondages")
+	else:
+		pdf.text( x=10, y=25, text= "Retour des sondages pour la classe " + group)
 
 	pdf.set_font( font, "B", size=18)
-	pdf.write( text= "\n{} réponse(s) pour cette classe: \n".format( len(lines) - 1 ))
-	pdf.set_font( font, "B", size=10)
-	l = lines[ 0 ][ args.parentRow : args.parentRow + 4 ]
-	pdf.write( text= "\n" + ", ".join( l ) + "\n\n" )
+	if group == allGroups:
+		pdf.write( text= "\n{} réponses: \n\n".format( len(lines) - 1 ))
+	else:
+		pdf.write( text= "\n{} réponse(s) pour cette classe: \n".format( len(lines) - 1 ))
+		pdf.set_font( font, "B", size=10)
+		l = lines[ 0 ][ args.parentRow : args.parentRow + 4 ]
+		pdf.write( text= "\n" + ", ".join( l ) + "\n\n" )
+
+	lastGroup = ""
 
 	# list pupils and parents names
 	for i, line in enumerate( lines ):
 		if i == 0 : continue
+		gr = line[ args.classRow ]
+		if gr != lastGroup :
+			pdf.set_text_color(0, 0, 0)
+			pdf.set_font( font, "BU", size=14)
+			pdf.write( text= "Classe " + str( gr ) + "\n\n" )
+			lastGroup = gr
+
 		pdf.set_text_color(0, 0, 255)
 		pdf.set_font( font, "B", size=12)
 		pdf.write( text= "(" + str( i ) + ")   " )
 		pdf.set_font( font, size=12)
 		pdf.write( text= line[ 0 ]  + ", ")
 		pdf.write( text= line[ 2 ] + ", ")
-		l = line[ args.parentRow : args.parentRow + 4 ]
-		pdf.write( text= ", ".join( l ) )
+		if group == allGroups :
+			pdf.write( text= line[ args.classRow ] )
+		else:
+			l = line[ args.parentRow : args.parentRow + 4 ]
+			pdf.write( text= ", ".join( l ) )
 		pdf.write( text= "\n\n")
 		pdf.set_text_color(0, 0, 0)
 
@@ -103,6 +125,8 @@ def printGroup( lines, group, returnPDF = False ) :
 	categories = lines[ 0 ]
 	for col, category in enumerate( categories ):
 		if col > 19 and col < 27 : continue
+
+		lastGroup = ""
 
 		for line in range( len( lines ) ): 
 			if col < args.startRow : continue
@@ -126,6 +150,13 @@ def printGroup( lines, group, returnPDF = False ) :
 						pdf.set_font( font, "B", size=16)
 
 			if line > 0:
+				gr = lines[ line ][ args.classRow ]
+				if gr != lastGroup :
+					pdf.set_text_color(0, 0, 0)
+					pdf.set_font( font, "BU", size=14)
+					pdf.write( text= "Classe " + str( gr ) + "\n\n" )
+					lastGroup = gr
+
 				pdf.set_text_color(0, 0, 255)
 				pdf.set_font( font, "B", size=12)
 				pdf.write( text= "(" + str( line ) + ")   " )
@@ -208,6 +239,7 @@ for c in groups:
 	if c in args.ignore : continue
 	print( "Classe : " + c )
 	content = printGroup( lines, c, not args.pdf )
+	if c == allGroups : exit( 0 )
 	fileName = c + ".pdf"
 	now = datetime.now()
 	dateStr = now.strftime("%d/%m/%Y %H:%M:%S")
