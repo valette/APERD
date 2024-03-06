@@ -76,12 +76,15 @@ def sendMail( msg ):
 	print(F'sent message to {message} Message Id: {message["id"]}')
 
 
-def getEmails( verbose=False ):
+def getEmails( ignore = [], verbose=False ):
 	if verbose : print( "Récuperation des emails..." )
 	init()
 	SAMPLE_SPREADSHEET_ID = "1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU"
+#	SAMPLE_SPREADSHEET_ID = "1PDQrgqO9ux8cNwEG16L3Kdk_8cJes11n8b1wQ7sPlaI"
+
+
 	SAMPLE_RANGE_NAME = "CC_23-24!A:Z"
-	SAMPLE_RANGE_NAME2 = "CC_T1!A1:Z19"
+	SAMPLE_RANGE_NAME2 = "CC_T2!A1:Z19"
 	members = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME )
 	if verbose : print( "Membres : ", members)
 	classes = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME2 )
@@ -89,17 +92,23 @@ def getEmails( verbose=False ):
 
 	emails = {}
 	for n, line in enumerate( classes[ 1:] ):
-		if len( line ) < 8: continue
+		if len( line ) < 6: continue
+		if line[ 0 ] in ignore : continue
 		if verbose : print( "classe :", line[ 0 ] )
 		people = []
-		for name in [ line[6], line[ 7 ] ]:
+
+		for name in line[6:]:
 			if len( name ) < 4 : continue
 			cleanName = unidecode( name ).strip()
+			cleanName = " ".join( cleanName.split( "-" ) )
 			found = False
 			email = None
 			for l in members:
 				if len( l ) < 4 : continue
-				if unidecode( l[ 3 ] ).strip() == cleanName:
+				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
+				tableName = unidecode( l[ 2 ] ) + " " + unidecode( l[ 1 ] )
+				tableName = " ".join( tableName.split( "-" ) )
+				if tableName == cleanName:
 					found = True
 					email = l[ 4 ]
 
