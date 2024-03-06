@@ -103,7 +103,7 @@ def printGroup( lines, group, returnPDF = False ) :
 		if gr != lastGroup :
 			pdf.set_text_color(0, 0, 0)
 			pdf.set_font( font, "BU", size=14)
-			pdf.write( text= "Classe " + str( gr ) + "\n\n" )
+			if group == allGroups : pdf.write( text= "Classe " + str( gr ) + "\n\n" )
 			lastGroup = gr
 
 		pdf.set_text_color(0, 0, 255)
@@ -154,7 +154,7 @@ def printGroup( lines, group, returnPDF = False ) :
 				if gr != lastGroup :
 					pdf.set_text_color(0, 0, 0)
 					pdf.set_font( font, "BU", size=14)
-					pdf.write( text= "Classe " + str( gr ) + "\n\n" )
+					if group == allGroups : pdf.write( text= "Classe " + str( gr ) + "\n\n" )
 					lastGroup = gr
 
 				pdf.set_text_color(0, 0, 255)
@@ -239,7 +239,7 @@ for c in groups:
 	if c in args.ignore : continue
 	print( "Classe : " + c )
 	content = printGroup( lines, c, not args.pdf )
-	if c == allGroups : exit( 0 )
+#	if c == allGroups : exit( 0 )
 	fileName = c + ".pdf"
 	now = datetime.now()
 	dateStr = now.strftime("%d/%m/%Y %H:%M:%S")
