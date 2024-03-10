@@ -93,13 +93,14 @@ def getEmails( ignore = [], verbose=False ):
 	emails = {}
 	for n, line in enumerate( classes[ 1:] ):
 		if len( line ) < 6: continue
-		if line[ 0 ] in ignore : continue
-		if verbose : print( "classe :", line[ 0 ] )
+		group = line[ 0 ].split( " " )[ 0 ]
+		if group in ignore : continue
+		if verbose : print( "classe :", group )
 		people = []
 
-		for name in line[6:]:
+		for name in line[ 6: ]:
 			if len( name ) < 4 : continue
-			cleanName = unidecode( name ).strip()
+			cleanName = unidecode( name.replace( "?", "" ) ).strip()
 			cleanName = " ".join( cleanName.split( "-" ) )
 			found = False
 			email = None
@@ -119,7 +120,7 @@ def getEmails( ignore = [], verbose=False ):
 #			print( name, ":" ,email )
 			people.append( { "name" : cleanName, "email" : email } )
 		if verbose : print( "emails :", people )
-		emails[ line[ 0 ] ] = people
+		emails[ group ] = people
 	if verbose : print( "Emails trouvés" )
 	return emails
 
