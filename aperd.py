@@ -14,7 +14,7 @@ parser.add_argument( "-cr", dest= "classRow", help="class row in file", default 
 parser.add_argument( "-sr", dest= "startRow", help="start row in file", default = 14, type = int )
 parser.add_argument( "-pr", dest= "parentRow", help="start row in file", default = 10, type = int )
 parser.add_argument( "-l", dest= "linesToDelete", help="start line in file", default = 2, type = int )
-parser.add_argument( "-s", dest= "start", help="start line in file", default = 461, type = int )
+parser.add_argument( "-s", dest= "start", help="start line in file", default = 500, type = int )
 parser.add_argument( "-g", "--go", dest= "go", help="send the mails", action = "store_true" )
 parser.add_argument( "-pdf", dest= "pdf", help="only generate pdfs", action = "store_true" )
 parser.add_argument( "-v", "--verbose", dest= "verbose", help="verbose output", action = "store_true" )

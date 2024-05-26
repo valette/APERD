@@ -84,7 +84,7 @@ def getEmails( ignore = [], verbose=False ):
 
 
 	SAMPLE_RANGE_NAME = "CC_23-24!A:Z"
-	SAMPLE_RANGE_NAME2 = "CC_T2!A1:Z19"
+	SAMPLE_RANGE_NAME2 = "CC_T3!A1:Z19"
 	members = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME )
 	if verbose : print( "Membres : ", members)
 	classes = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME2 )
@@ -108,6 +108,18 @@ def getEmails( ignore = [], verbose=False ):
 				if len( l ) < 4 : continue
 				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
 				tableName = unidecode( l[ 2 ] ) + " " + unidecode( l[ 1 ] )
+				tableName = " ".join( tableName.split( "-" ) )
+
+				if tableName == cleanName:
+					found = True
+					email = l[ 4 ]
+
+				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
+				if tableName == cleanName:
+					found = True
+					email = l[ 4 ]
+
+				tableName = unidecode( l[ 1 ] ) + " " + unidecode( l[ 2 ] )
 				tableName = " ".join( tableName.split( "-" ) )
 				if tableName == cleanName:
 					found = True
