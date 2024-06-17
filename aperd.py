@@ -201,7 +201,8 @@ lines = getAllGroups( 'aperd.tsv' )
 subject = "APERD Dufy {} : Retours Sondage Conseils de Classe"
 
 begin = ["Bonjour",
-"Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe.", "" ]
+"Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe.", 
+"Rappel : l'adresse du sondage est https://frama.link/DUFY_Preparation_CC", "" ]
 
 hasPolls = ["Un récapitlatif des retours de sondage est en pièce jointe à ce message."]
 hasNoPolls = ["Malheureusement, aucun parent d'élève de la classe n'a pour l'instant répondu au sondage."]
