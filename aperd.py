@@ -80,7 +80,7 @@ def printGroup( lines, group, returnPDF = False ) :
 		if gr != lastGroup :
 			pdf.set_text_color(0, 0, 0)
 			pdf.set_font( font, "BU", size=14)
-			if group == allGroups : pdf.write( text= "Classe " + str( gr ) + "\n\n" )
+			if group == allGroups : pdf.write( height, txt= "Classe " + str( gr ) + "\n\n" )
 			lastGroup = gr
 
 		pdf.set_text_color(0, 0, 255)
@@ -212,8 +212,9 @@ for c in groups:
 	if args.sendTo:
 		toSend.append( args.sendTo )
 	else:
-		for p in emails[ c ]:
-			toSend.append( p[ "email" ] )
+		if c in emails :
+			for p in emails[ c ]:
+				toSend.append( p[ "email" ] )
 
 	print( toSend )
 	if args.pdf : continue
