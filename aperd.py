@@ -12,7 +12,6 @@ with open( 'config.yml', 'r' ) as file:
 parser = argparse.ArgumentParser( description = 'Distances computation', formatter_class=argparse.ArgumentDefaultsHelpFormatter )
 parser.add_argument( "-to", dest= "sendTo", help="Send to this adress" )
 parser.add_argument( "-cc", dest= "copyTo", help="Send copies to this adress", default = [ config[ "APERD_Email" ] ], action = "append" )
-parser.add_argument( "-l", dest= "linesToDelete", help="start line in file", default = 2, type = int )
 parser.add_argument( "-g", "--go", dest= "go", help="send the mails", action = "store_true" )
 parser.add_argument( "--pdf", help="only generate pdfs", action = "store_true" )
 parser.add_argument( "-v", "--verbose", dest= "verbose", help="verbose output", action = "store_true" )
