@@ -2,6 +2,7 @@ import base64
 import os.path
 import json
 from unidecode import unidecode
+import yaml
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -76,15 +77,12 @@ def sendMail( msg ):
 	print(F'sent message to {message} Message Id: {message["id"]}')
 
 
-def getEmails( ignore = [], verbose=False ):
+def getEmails( config, ignore = [], verbose=False ):
 	if verbose : print( "Récuperation des emails..." )
 	init()
-	SAMPLE_SPREADSHEET_ID = "1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU"
-#	SAMPLE_SPREADSHEET_ID = "1PDQrgqO9ux8cNwEG16L3Kdk_8cJes11n8b1wQ7sPlaI"
-
-
-	SAMPLE_RANGE_NAME = "CC_23-24!A:Z"
-	SAMPLE_RANGE_NAME2 = "CC_T3!A1:Z19"
+	SAMPLE_SPREADSHEET_ID = config["spreadsheet"]["id"]
+	SAMPLE_RANGE_NAME = config["spreadsheet"]["names_range"]
+	SAMPLE_RANGE_NAME2 = config["spreadsheet"]["current_range"]
 	members = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME )
 	if verbose : print( "Membres : ", members)
 	classes = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME2 )
@@ -143,6 +141,8 @@ if __name__ == "__main__":
 		"Body" : "Test de message \n Sebastien"
 	}
 #	sendMail( msg )
-	e =  getEmails()
+	with open( 'config.yml', 'r' ) as file:
+		config = yaml.safe_load(file)
+	e =  getEmails( config )
 	print( json.dumps( e, indent = 4 ) )
 	

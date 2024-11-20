@@ -1,0 +1,66 @@
+APERD_Email: secretariat.aperd.lyon@gmail.com
+
+spreadsheet:
+  id : 1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU #id de la feuille de calcul google
+  names_range: CC_23-24!A:Z # liste des membres
+  current_range: CC_T3!A1:Z19 # parents inscrits pour le conseil de classe à venir
+
+poll:
+  file: aperd.tsv
+  data_line: 3
+  start: 500 # pour ne prendre que les sondages du conseil de classe en cours
+  class_row: 9 # indique où se trouve la colonne de la classe pour chaque résultat de sondage
+  answers_start_row: 14 # indique la première colonne de résultat de sondage
+  parent_row: 10
+
+text:
+  font: times
+  height: 6
+
+question_titles:
+  14:
+  - La Classe en général,
+  - Avez-vous des remarques à faire relatives aux horaires, à l’ambiance de la classe, la discipline, les contrôles, l’emploi du temps, le déroulement des cours, les absences des professeurs...
+
+  15:
+  - La scolarité de votre enfant;
+  - Ces questions visent à recueillir votre avis sur l'épanouissement de votre enfant dans le collège.
+  - D'un point de vue '"'scolaire'"'
+  - Au sujet du programme, du rythme, des horaires, du contrôle des connaissances...
+
+  17:
+  - D’un point de vue '"'relationnel'"'
+  - Au sujet de l’ambiance générale, de la discipline, des relations avec les autres élèves ou les professeurs.
+
+  19:
+  - Dans certaines matières ?
+  - Est-ce que dans certaines matières, votre enfant rencontre des difficultés, ou bien vous avez des questions concernant à leur sujet ?
+
+  28:
+  - La vie au collège & expression libre
+  - Avez-vous des remarques à faire concernant la cantine, les repas, l'association sportive, les récréations, la sécurité, le service médical, l'accueil, le CDI, les activités sportives et culturelles du midi, les sorties pédagogiques, les études, l’association des parents… ?
+
+
+email:
+  subject: APERD Dufy {}':' Retours Sondage Conseils de Classe
+
+  begin:
+  - Bonjour
+  - Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe. 
+  - Rappel ':' l'adresse du sondage est https://frama.link/DUFY_Preparation_CC
+  - '  '
+
+  has_polls:
+  - Un récapitlatif des retours de sondage est en pièce jointe à ce message
+
+  has_no_polls:
+  - Malheureusement, aucun parent d'élève de la classe n'a pour l'instant répondu au sondage.
+
+  end:
+  - '  '
+  - Pour toute question, utilisez de préférence le canal Whatsapp '"'APERD Conseils de Classe'"'
+  - '  '
+  - Bonne journée
+  - Pour l'APERD
+  - Sébastien VALETTE
+
