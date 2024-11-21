@@ -9,8 +9,10 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
-from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email import encoders
 import mimetypes
 
 # If modifying these scopes, delete the file token.json.
@@ -60,19 +62,19 @@ def getSheet( sheetID, sheetRange ):
 
 def sendMail( msg ):
 	init()
-	message = EmailMessage()
+	message = MIMEMultipart()
 	for field in [ "To", "Subject", "Cc" ]:
 		if field in msg : message[ field ] = msg[ field ]
-	message.set_content( msg["Body"] )
+	message.attach( MIMEText( msg[ "Body" ], 'plain' ) )
 
 	if "Attachments" in msg:
 		files = msg[ "Attachments" ]
 		for file in files:
-			# guessing the MIME type
-			type_subtype, _ = mimetypes.guess_type(file)
-			maintype, subtype = type_subtype.split("/")
-			message.add_attachment(files[ file ], maintype, subtype,  filename=file)
-
+			part = MIMEBase('application', 'octet-stream')
+			part.set_payload( files[ file ] )
+			encoders.encode_base64( part )
+			part.add_header('Content-Disposition', f'attachment; filename={file}')
+			message.attach(part)
 	create_message = {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
 	message = (mailService.users().messages().send(userId="me", body=create_message).execute())
 	print(F'sent message to {message} Message Id: {message["id"]}')
