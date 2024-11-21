@@ -25,6 +25,7 @@ mailService = None
 def init():
 	global sheetService
 	global mailService
+	creds=None
 	if sheetService : return
 	if os.path.exists(sheetsToken):
 		creds = Credentials.from_authorized_user_file(sheetsToken, SCOPES)
