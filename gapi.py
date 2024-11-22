@@ -106,28 +106,28 @@ def getEmails( config, ignore = [], verbose=False ):
 			found = False
 			email = None
 			for l in members:
-				if len( l ) < 4 : continue
+				if len( l ) < 5 : continue
 				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
 				tableName = unidecode( l[ 2 ] ) + " " + unidecode( l[ 1 ] )
 				tableName = " ".join( tableName.split( "-" ) )
 
-				if tableName == cleanName:
+				if tableName.lower() == cleanName.lower():
 					found = True
 					email = l[ 4 ]
 
 				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
-				if tableName == cleanName:
+				if tableName.lower() == cleanName.lower():
 					found = True
 					email = l[ 4 ]
 
 				tableName = unidecode( l[ 1 ] ) + " " + unidecode( l[ 2 ] )
 				tableName = " ".join( tableName.split( "-" ) )
-				if tableName == cleanName:
+				if tableName.lower() == cleanName.lower():
 					found = True
 					email = l[ 4 ]
 
 			if not found :
-				print( "Error : name not found : " + name )
+				print( "Error : group " + group + " : name not found : " + name )
 				exit( 1 )
 
 #			print( name, ":" ,email )

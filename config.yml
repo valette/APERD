@@ -1,14 +1,15 @@
 APERD_Email: secretariat.aperd.lyon@gmail.com
 
 spreadsheet:
-  id : 1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU #id de la feuille de calcul google
-  names_range: CC_23-24!A:Z # liste des membres
-  current_range: CC_T3!A1:Z19 # parents inscrits pour le conseil de classe à venir
+  idOLD: 1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU #id de la feuille de calcul google
+  id: 1VxPA2GEri1VeTo2Ua_BqWX4GTRMAFgbo1tf-Q-Pp5xQ
+  names_range: CC_24-25!A:Z # liste des membres
+  current_range: CC_T1!A1:Z19 # parents inscrits pour le conseil de classe à venir
 
 poll:
   file: aperd.tsv
   data_line: 3
-  start: 500 # pour ne prendre que les sondages du conseil de classe en cours
+  start: 534 # pour ne prendre que les sondages du conseil de classe en cours
   class_row: 9 # indique où se trouve la colonne de la classe pour chaque résultat de sondage
   answers_start_row: 14 # indique la première colonne de résultat de sondage
   parent_row: 10
@@ -42,12 +43,12 @@ question_titles:
 
 
 email:
-  subject: APERD Dufy {}':' Retours Sondage Conseils de Classe
+  subject: "APERD Dufy {} : Retours Sondage Conseils de Classe"
 
   begin:
   - Bonjour
   - Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe. 
-  - Rappel ':' l'adresse du sondage est https://frama.link/DUFY_Preparation_CC
+  - "Rappel : l'adresse du sondage est https://frama.link/DUFY_Preparation_CC"
   - '  '
 
   has_polls:
@@ -62,5 +63,5 @@ email:
   - '  '
   - Bonne journée
   - Pour l'APERD
-  - Sébastien VALETTE
+  - Simon Clavier
 
