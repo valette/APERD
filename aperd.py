@@ -216,7 +216,11 @@ for c in groups:
 	else:
 		if c in emails :
 			for p in emails[ c ]:
-				toSend.append( p[ "email" ] )
+				email = p[ "email" ].strip()
+				if len ( email ) == 0 :
+					print( '******Warning, email for ' + p[ "name" ] + " is empty******" )
+				else:
+					toSend.append( p[ "email" ] )
 
 	print( toSend )
 	if args.pdf : continue
