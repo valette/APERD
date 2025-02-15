@@ -203,7 +203,6 @@ if not args.sendTo :
 	if args.verbose : print( "Emails : ", emails )
 
 for c in groups:
-#	if c in args.ignore : continue
 	print( "Classe : " + c )
 	content = printGroup( lines, c, not args.pdf )
 #	if c == allGroups : exit( 0 )
