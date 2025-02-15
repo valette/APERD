@@ -4,12 +4,12 @@ spreadsheet:
   idOLD: 1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU #id de la feuille de calcul google
   id: 1VxPA2GEri1VeTo2Ua_BqWX4GTRMAFgbo1tf-Q-Pp5xQ
   names_range: CC_24-25!A:Z # liste des membres
-  current_range: CC_T1!A1:Z19 # parents inscrits pour le conseil de classe à venir
+  current_range: CC_T2!A1:Z19 # parents inscrits pour le conseil de classe à venir
 
 poll:
   file: aperd.tsv
   data_line: 3
-  start: 534 # pour ne prendre que les sondages du conseil de classe en cours
+  start: 622 # pour ne prendre que les sondages du conseil de classe en cours
   class_row: 9 # indique où se trouve la colonne de la classe pour chaque résultat de sondage
   answers_start_row: 14 # indique la première colonne de résultat de sondage
   parent_row: 10
@@ -47,7 +47,7 @@ email:
 
   begin:
   - Bonjour
-  - Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe. 
+  - Ceci est un mail automatique pour vous faire part des remontées du sondage des parents de la classe {} ({}), en vue de préparer le conseil de classe.
   - "Rappel : l'adresse du sondage est https://frama.link/DUFY_Preparation_CC"
   - '  '
 
