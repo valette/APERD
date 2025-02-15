@@ -80,7 +80,7 @@ def sendMail( msg ):
 	print(F'sent message to {message} Message Id: {message["id"]}')
 
 
-def getEmails( config, ignore = [], verbose=False ):
+def getEmails( config, groups, verbose=False ):
 	if verbose : print( "Récuperation des emails..." )
 	init()
 	SAMPLE_SPREADSHEET_ID = config["spreadsheet"]["id"]
@@ -95,7 +95,7 @@ def getEmails( config, ignore = [], verbose=False ):
 	for n, line in enumerate( classes[ 1:] ):
 		if len( line ) < 6: continue
 		group = line[ 0 ].split( " " )[ 0 ]
-		if group in ignore : continue
+		if not group in groups : continue
 		if verbose : print( "classe :", group )
 		people = []
 
@@ -148,4 +148,4 @@ if __name__ == "__main__":
 		config = yaml.safe_load(file)
 	e =  getEmails( config )
 	print( json.dumps( e, indent = 4 ) )
-	
+

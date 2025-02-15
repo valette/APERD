@@ -105,7 +105,7 @@ def printGroup( lines, group, returnPDF = False ) :
 
 		lastGroup = ""
 
-		for line in range( len( lines ) ): 
+		for line in range( len( lines ) ):
 			if col < config[ "poll" ][ "answers_start_row" ] : continue
 			if line == 0 :
 				pdf.set_font( font, "B", size=16)
@@ -189,25 +189,28 @@ bodyNoPollsLines.extend( config["email"]["end"] )
 body = "\n".join( bodyLines )
 bodyNoPolls = "\n".join( bodyNoPollsLines )
 
-emails = None
-if not args.sendTo :
-	emails = getEmails( config, args.ignore, args.verbose )
-	if args.verbose : print( "Emails : ", emails )
 
 groups = args.only
 if len( groups ) == 0:
 	for n in range( 3, 7 ) :
 		for i in range( 1, 5 ) : groups.append( str( n ) + "0" + str( i ) )
 
+groups = list( filter( lambda g : not g in args.ignore, groups ) )
+
+emails = None
+if not args.sendTo :
+	emails = getEmails( config, groups, args.verbose )
+	if args.verbose : print( "Emails : ", emails )
+
 for c in groups:
-	if c in args.ignore : continue
+#	if c in args.ignore : continue
 	print( "Classe : " + c )
 	content = printGroup( lines, c, not args.pdf )
 #	if c == allGroups : exit( 0 )
 	fileName = c + ".pdf"
 	now = datetime.now()
 	dateStr = now.strftime("%d/%m/%Y %H:%M:%S")
-	
+
 	toSend = []
 	if args.sendTo:
 		toSend.append( args.sendTo )
