@@ -1,5 +1,6 @@
 import argparse
 import csv
+import emoji
 import json
 from fpdf import FPDF
 from gapi import sendMail, getEmails
@@ -141,6 +142,7 @@ def printGroup( lines, group, returnPDF = False ) :
 				pdf.set_text_color(0, 0, 0)
 
 			value = lines[ line ][ col ]
+			value = emoji.demojize( value)
 			pdf.write( height, txt= value )
 			pdf.write( height, txt= "\n")
 			if line > 0 and col == 19 and len(value ) > 0 :
