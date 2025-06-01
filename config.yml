@@ -9,7 +9,7 @@ spreadsheet:
 poll:
   file: aperd.tsv
   data_line: 3
-  start: 622 # pour ne prendre que les sondages du conseil de classe en cours
+  start: 686 # pour ne prendre que les sondages du conseil de classe en cours
   class_row: 9 # indique où se trouve la colonne de la classe pour chaque résultat de sondage
   answers_start_row: 14 # indique la première colonne de résultat de sondage
   parent_row: 10
