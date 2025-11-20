@@ -2,14 +2,20 @@ APERD_Email: secretariat.aperd.lyon@gmail.com
 
 spreadsheet:
   idOLD: 1GgqSww81cxa0vbT3VTPy3Aq-9gR4wAwxqA48A5gHnoU #id de la feuille de calcul google
-  id: 1VxPA2GEri1VeTo2Ua_BqWX4GTRMAFgbo1tf-Q-Pp5xQ
-  names_range: CC_24-25!A:Z # liste des membres
-  current_range: CC_T2!A1:Z19 # parents inscrits pour le conseil de classe à venir
+  idOLD2: 1VxPA2GEri1VeTo2Ua_BqWX4GTRMAFgbo1tf-Q-Pp5xQ
+  id: 1fkLVmejhN8OgEmxcGk1DHDJq9XjZZMxw3y03ce87szY
+  names_range: Liste_Parents!A:Z # liste des membres
+  current_range: CC_T1!A1:Z19 # parents inscrits pour le conseil de classe à venir
+  full_name_rowOLD: 3
+  full_name_row: 5
+  last_name_row: 0
+  first_name_row: 1
+  email_row : 7
 
 poll:
   file: aperd.tsv
   data_line: 3
-  start: 686 # pour ne prendre que les sondages du conseil de classe en cours
+  start: 739 # pour ne prendre que les sondages du conseil de classe en cours
   class_row: 9 # indique où se trouve la colonne de la classe pour chaque résultat de sondage
   answers_start_row: 14 # indique la première colonne de résultat de sondage
   parent_row: 10

@@ -90,6 +90,10 @@ def getEmails( config, groups, verbose=False ):
 	if verbose : print( "Membres : ", members)
 	classes = getSheet( SAMPLE_SPREADSHEET_ID, SAMPLE_RANGE_NAME2 )
 	if verbose : print( "Classes : ", classes)
+	full_name_row = config["spreadsheet"]["full_name_row"]
+	last_name_row = config["spreadsheet"]["last_name_row"]
+	first_name_row = config["spreadsheet"]["first_name_row"]
+	email_row = config["spreadsheet"]["email_row"]
 
 	emails = {}
 	for n, line in enumerate( classes[ 1:] ):
@@ -103,28 +107,29 @@ def getEmails( config, groups, verbose=False ):
 			if len( name ) < 4 : continue
 			cleanName = unidecode( name.replace( "?", "" ) ).strip()
 			cleanName = " ".join( cleanName.split( "-" ) )
+			if verbose : print( cleanName )
 			found = False
 			email = None
 			for l in members:
 				if len( l ) < 5 : continue
-				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
-				tableName = unidecode( l[ 2 ] ) + " " + unidecode( l[ 1 ] )
+				tableName = " ".join( unidecode( l[ full_name_row ] ).strip().split( "-" ) )
+				tableName = unidecode( l[ first_name_row ] ) + " " + unidecode( l[ last_name_row ] )
 				tableName = " ".join( tableName.split( "-" ) )
 
 				if tableName.lower() == cleanName.lower():
 					found = True
-					email = l[ 4 ]
+					email = l[ email_row ]
 
-				tableName = " ".join( unidecode( l[ 3 ] ).strip().split( "-" ) )
+				tableName = " ".join( unidecode( l[ full_name_row ] ).strip().split( "-" ) )
 				if tableName.lower() == cleanName.lower():
 					found = True
-					email = l[ 4 ]
+					email = l[ email_row ]
 
 				tableName = unidecode( l[ 1 ] ) + " " + unidecode( l[ 2 ] )
 				tableName = " ".join( tableName.split( "-" ) )
 				if tableName.lower() == cleanName.lower():
 					found = True
-					email = l[ 4 ]
+					email = l[ email_row ]
 
 			if not found :
 				print( "Error : group " + group + " : name not found : " + name )
