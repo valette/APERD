@@ -12,6 +12,9 @@ spreadsheet:
   first_name_row: 1
   email_row : 7
 
+groups:
+  size: [ 5,4,4,4] # nombre de classes de 3e, 4e, 5e, 6e
+
 poll:
   file: aperd.tsv
   data_line: 3

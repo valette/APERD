@@ -195,7 +195,7 @@ bodyNoPolls = "\n".join( bodyNoPollsLines )
 groups = args.only
 if len( groups ) == 0:
 	for n in range( 3, 7 ) :
-		for i in range( 1, 5 ) : groups.append( str( n ) + "0" + str( i ) )
+		for i in range( 1, config[ "groups"][ "size"][ n - 3 ] + 1 ) : groups.append( str( n ) + "0" + str( i ) )
 
 groups = list( filter( lambda g : not g in args.ignore, groups ) )
 
